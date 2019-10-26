@@ -156,7 +156,7 @@ install_tools
 check_all
 build
 
-ls $PROJ/program > /dev/null || mkdir $PROJ/program ;
+ls $PROJ/program > /dev/null 2>&1 || mkdir $PROJ/program ;
 cd $PROJ/program || exit 1;
 echo -e "#include <stdio.h>\nint main()\n{\n\tprintf(\"hello world\\\n\");\n\treturn 0;\n}\n" > hello.c
 $TARGET-gcc hello.c -o hello-aarch64-1 || echo "build demo failed!" && exit 1;
