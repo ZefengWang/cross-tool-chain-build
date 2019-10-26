@@ -47,7 +47,7 @@ function decompress()
 	ls $SRC/$gcc > /dev/null 2>&1		|| tar xvzf $gcc.tar.gz -C $SRC/		|| exit 1;
 	ls $SRC/$gdb > /dev/null 2>&1		|| tar xvzf $gdb.tar.gz -C $SRC/		|| exit 1;
 	ls $SRC/$glibc > /dev/null 2>&1		|| tar xvzf $glibc.tar.gz -C $SRC/		|| exit 1;
-	sed -i "77a #ifndef PATH_MAX\n#define PATH_MAX 4096\n#endif\n" $SRC/$gcc/libsanitizer/asan/asan_linux.cc || exit 1;
+	sed -i "77a #ifndef PATH_MAX\n#define PATH_MAX 1024\n#endif\n" $SRC/$gcc/libsanitizer/asan/asan_linux.cc || exit 1;
 	ls $SRC/$gcc/mpc > /dev/null 2>&1	|| (tar xvzf $mpc.tar.gz -C $SRC/$gcc/	&& mv $SRC/$gcc/$mpc $SRC/$gcc/mpc) || exit 1;
 	ls $SRC/$gcc/mpfr > /dev/null 2>&1	|| (tar xvzf $mpfr.tar.gz -C $SRC/$gcc/	&& mv $SRC/$gcc/$mpfr $SRC/$gcc/mpfr) || exit 1;
 	ls $SRC/$gcc/gmp > /dev/null 2>&1	|| (tar xvJf $gmp.tar.xz -C $SRC/$gcc/	&& mv $SRC/$gcc/$gmp $SRC/$gcc/gmp) || exit 1;
