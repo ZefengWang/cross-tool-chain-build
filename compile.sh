@@ -57,7 +57,7 @@ function decompress()
 function check_all()
 {
 	checkdir $BUILD;checkdir $INSTALL;checkdir $PACKAGE; download;checkdir $SRC; decompress;
-	checkdir $BUILD/$bin; checkdir $BUILD/$glibc;checkdir $BUILD $gcc;
+	checkdir $BUILD/$bin; checkdir $BUILD/$glibc;checkdir $BUILD/$gcc;
 	checkdir $BUILD/$gdb; checkdir $BUILD/$linux;
 }
 
