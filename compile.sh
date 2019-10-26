@@ -16,6 +16,7 @@ gmp=gmp-6.1.2
 mpfr=mpfr-3.1.4
 mpc=mpc-1.1.0
 isl=isl-0.18
+gdbs=gdbserver
 export PATH="$INSTALL/bin:$PATH"
 export LD_LIBRARY_PATH=
 
@@ -58,7 +59,7 @@ function check_all()
 {
 	checkdir $BUILD;checkdir $INSTALL;checkdir $PACKAGE; download;checkdir $SRC; decompress;
 	checkdir $BUILD/$bin; checkdir $BUILD/$glibc;checkdir $BUILD/$gcc;
-	checkdir $BUILD/$gdb; checkdir $BUILD/$linux;
+	checkdir $BUILD/$gdb; checkdir $BUILD/$gdbs; checkdir $PROJ/$gdbs;
 }
 
 function build_binutils()
@@ -110,8 +111,9 @@ function build_gdb()
 		--prefix=$INSTALL \
 		--target=$TARGET
 
+	make clean -j12|| exit 1;
 	make -j12 || exit 1;
-	make install ;
+	make install || exit 1;
 }
 
 function build_glibc()
@@ -124,6 +126,7 @@ function build_glibc()
 		--target=$TARGET \
 		--with-headers=$INSTALL/$TARGET/include
 
+	make clean -j12 || exit 1;
 	make -j12 || exit 1;
 	make install || exit 1;
 }
@@ -137,7 +140,17 @@ function build_gcc_with_glibc()
 		--target=$TARGET \
 		--enable-shared
 
+	make clean -j12 || exit 1;
 	make -j12 || exit 1;
+	make install || exit 1;
+}
+
+function build_gdbserver()
+{
+	cd $BUILD/$gdbs
+	../../src/$gdb/gdb/$gdbs/configure --target=$TARGET --host=$TARGET --prefix=$PROJ/$gdbs
+	make clean -j12 || exit 1;
+	CC=$TARGET-gcc make -j12 || exit 1;
 	make install || exit 1;
 }
 
@@ -150,6 +163,7 @@ function build()
 	build_gdb
 	build_glibc
 	build_gcc_with_glibc
+	build_gdbserver
 }
 
 install_tools
