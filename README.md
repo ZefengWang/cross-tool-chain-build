@@ -6,6 +6,8 @@ You can edit the shell script for your needs
 
 default buinding is for aarch64-linux-gnueabi
 
+## system requires
+at least 12G free space on your harddisk 
 
 ## usage
 
