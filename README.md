@@ -19,3 +19,5 @@ at least 12G free space on your harddisk
 The gcc 9.2 has a bug when you build cross tool chain.  
 In the gcc-9.2.0/libsanitizer/asan/asan_linux.cc , `PATH_MAX` was not declear, you need declear it.  
 I search it in libc, it is 1024.
+
+## This script is verified on ubuntu 19.04
