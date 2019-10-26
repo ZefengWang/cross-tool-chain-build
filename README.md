@@ -16,6 +16,6 @@ at least 12G free space on your harddisk
 ```
 ## note
 
-The gcc 9.2 has a bug when you build cross tool chain.
-In the gcc-9.2.0/libsanitizer/asan/asan_linux.cc , `PATH_MAX` was not declear, you need add it.
+The gcc 9.2 has a bug when you build cross tool chain.  
+In the gcc-9.2.0/libsanitizer/asan/asan_linux.cc , `PATH_MAX` was not declear, you need add it.  
 I search it in libc, it was 1024.
