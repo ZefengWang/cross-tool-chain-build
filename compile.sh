@@ -17,13 +17,16 @@ mpfr=mpfr-3.1.4
 mpc=mpc-1.1.0
 isl=isl-0.18
 gdbs=gdbserver
-export PATH="$INSTALL/bin:$PATH"
+
+mt=-j`cat /proc/cpuinfo| grep "processor"| wc -l`
+
+export PATH="$INSTALL/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 export LD_LIBRARY_PATH=
 
 function checkdir() { if [ ! -d $1 ];then mkdir $1;fi }
 function install_tools()
 {
-	sudo apt install libtool gawk texinfo gcc wget automake tar gzip autoconf gettext autogen guile-2.2 flex bison || exit 1;
+	sudo apt install libtool gawk texinfo gcc wget automake tar gzip autoconf gettext autogen guile-2.2 flex bison libncurses5-dev libncurses5 || exit 1;
 }
 
 function download()
@@ -59,7 +62,7 @@ function check_all()
 {
 	checkdir $BUILD;checkdir $INSTALL;checkdir $PACKAGE; download;checkdir $SRC; decompress;
 	checkdir $BUILD/$bin; checkdir $BUILD/$glibc;checkdir $BUILD/$gcc;
-	checkdir $BUILD/$gdb; checkdir $BUILD/$gdbs; checkdir $PROJ/$gdbs;
+	checkdir $BUILD/$gdb; #checkdir $BUILD/$gdbs; checkdir $PROJ/$gdbs;
 }
 
 function build_binutils()
@@ -72,9 +75,9 @@ function build_binutils()
 		--target=$TARGET \
 		--disable-shared 
 
-	make clean || exit 1;
-	make -j12 || exit 1;
-	make install || exit 1;
+	make clean $mt || exit 1;
+	make $mt || exit 1;
+	make install $mt || exit 1;
 }
 
 function build_gcc_without_libc()
@@ -89,18 +92,18 @@ function build_gcc_without_libc()
 		--disable-threads \
 		--disable-shared 
 
-	make clean  -j12 || exit 1;
-	make all-gcc  -j12 || exit 1;
-	make all-target-libgcc -j12 || exit 1;
-	make install-gcc -j12 || exit 1;
-	make install-target-libgcc -j12 || exit 1;
+	make clean  $mt || exit 1;
+	make all-gcc  $mt || exit 1;
+	make all-target-libgcc $mt || exit 1;
+	make install-gcc $mt || exit 1;
+	make install-target-libgcc $mt || exit 1;
 
 }
 
 function build_linux_header()
 {
 	cd $SRC/$linux
-	make ARCH=arm64 CROSS_COMPILE=$TARGET-gcc INSTALL_HDR_PATH=$INSTALL/$TARGET headers_install || exit 1
+	make ARCH=arm64 CROSS_COMPILE=$TARGET-gcc INSTALL_HDR_PATH=$INSTALL/$TARGET headers_install $mt || exit 1
 }
 
 function build_gdb()
@@ -111,9 +114,9 @@ function build_gdb()
 		--prefix=$INSTALL \
 		--target=$TARGET
 
-	make clean -j12|| exit 1;
-	make -j12 || exit 1;
-	make install || exit 1;
+	make clean $mt || exit 1;
+	make $mt || exit 1;
+	make install $mt || exit 1;
 }
 
 function build_glibc()
@@ -126,9 +129,9 @@ function build_glibc()
 		--target=$TARGET \
 		--with-headers=$INSTALL/$TARGET/include
 
-	make clean -j12 || exit 1;
-	make -j12 || exit 1;
-	make install || exit 1;
+	make clean $mt || exit 1;
+	make $mt || exit 1;
+	make install $mt || exit 1;
 }
 
 function build_gcc_with_glibc()
@@ -140,18 +143,18 @@ function build_gcc_with_glibc()
 		--target=$TARGET \
 		--enable-shared
 
-	make clean -j12 || exit 1;
-	make -j12 || exit 1;
-	make install || exit 1;
+	make clean $mt || exit 1;
+	make $mt || exit 1;
+	make install $mt || exit 1;
 }
 
 function build_gdbserver()
 {
 	cd $BUILD/$gdbs
-	../../src/$gdb/gdb/$gdbs/configure --target=$TARGET --host=$TARGET --prefix=$PROJ/$gdbs
-	make clean -j12 || exit 1;
-	CC=$TARGET-gcc make -j12 || exit 1;
-	make install || exit 1;
+	CXX=$TARGET-g++ CC=$TARGET-gcc ../../src/$gdb/gdb/$gdbs/configure --target=$TARGET --host=$TARGET --prefix=$PROJ/$gdbs
+	make clean $mt || exit 1;
+	make $mt || exit 1;
+	make install $mt || exit 1;
 }
 
 function build()
@@ -163,7 +166,7 @@ function build()
 	build_gdb
 	build_glibc
 	build_gcc_with_glibc
-	build_gdbserver
+#	build_gdbserver
 }
 
 install_tools
@@ -173,4 +176,4 @@ build
 ls $PROJ/program > /dev/null 2>&1 || mkdir $PROJ/program ;
 cd $PROJ/program || exit 1;
 echo -e "#include <stdio.h>\nint main()\n{\n\tprintf(\"hello world\\\n\");\n\treturn 0;\n}\n" > hello.c
-$TARGET-gcc hello.c -o hello-aarch64-1 || echo "build demo failed!" && exit 1;
+$TARGET-gcc hello.c -o hello || echo "build demo failed!" && exit 1;
