@@ -9,6 +9,14 @@ At least 12G free space harddisk on your system.
 ```shell
 ./compile.sh
 ```
+## bugs
+```c
+/* Maximum length of any multibyte character in any locale.
+   We define this value here since the gcc header does not define
+   the correct value.  */
+#define MB_LEN_MAX      16
+```
+
 ## note
 The gcc 9.2 has a bug when you build cross tool chain.  
 In the gcc-9.2.0/libsanitizer/asan/asan_linux.cc , `PATH_MAX` was not declear, you need declear it.  
