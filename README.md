@@ -13,4 +13,17 @@ At least 12G free space harddisk on your system.
 The gcc 9.2 has a bug when you build cross tool chain.  
 In the gcc-9.2.0/libsanitizer/asan/asan_linux.cc , `PATH_MAX` was not declear, you need declear it.  
 I search it in libc, it is 1024.
-## This script is verified on ubuntu 19.04
+
+# option
+The default is not compile gdbserver.  
+If you want to compile gdbserver, you will need to edit the source code.  
+After copy the src to the dir src, you need to find all the declear of macro `MB_LEN_MAX` and change them from `1` to `16`.  
+```shell
+cd ./src
+grep -rn "#define MB_LEN_MAX" ./
+```
+And then, you need to find the src code change them.   
+After that, you should edit the script and find the function `checkall` and `buildgdbserver`,   
+remove the charactor  `'#'`.   
+## tested
+This script is verified on ubuntu 19.04
