@@ -62,7 +62,7 @@ function check_all()
 {
 	checkdir $BUILD;checkdir $INSTALL;checkdir $PACKAGE; download;checkdir $SRC; decompress;
 	checkdir $BUILD/$bin; checkdir $BUILD/$glibc;checkdir $BUILD/$gcc;
-	checkdir $BUILD/$gdb; #checkdir $BUILD/$gdbs; checkdir $PROJ/$gdbs;
+	checkdir $BUILD/$gdb; checkdir $BUILD/$gdbs; checkdir $PROJ/$gdbs;
 }
 
 function build_binutils()
@@ -151,7 +151,7 @@ function build_gcc_with_glibc()
 function build_gdbserver()
 {
 	cd $BUILD/$gdbs
-	CXX=$TARGET-g++ CC=$TARGET-gcc ../../src/$gdb/gdb/$gdbs/configure --target=$TARGET --host=$TARGET --prefix=$PROJ/$gdbs
+	CXX=$TARGET-g++ CC=$TARGET-gcc ../../src/$gdb/gdb/$gdbs/configure --target=$TARGET --host=$TARGET --prefix=$PROJ/$gdbs --program-prefix=
 	make clean $mt || exit 1;
 	make $mt || exit 1;
 	make install $mt || exit 1;
@@ -166,7 +166,7 @@ function build()
 	build_gdb
 	build_glibc
 	build_gcc_with_glibc
-#	build_gdbserver
+	build_gdbserver
 }
 
 install_tools
