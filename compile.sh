@@ -176,4 +176,4 @@ build
 ls $PROJ/program > /dev/null 2>&1 || mkdir $PROJ/program ;
 cd $PROJ/program || exit 1;
 echo -e "#include <stdio.h>\nint main()\n{\n\tprintf(\"hello world\\\n\");\n\treturn 0;\n}\n" > hello.c
-$TARGET-gcc hello.c -o hello || echo "build demo failed!" && exit 1;
+$TARGET-gcc hello.c -o hello-$TARGET || echo "build demo failed!" && exit 1;
