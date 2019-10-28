@@ -21,6 +21,14 @@ At least 12G free space harddisk on your system.
 The gcc 9.2 has a bug when you build cross tool chain.  
 In the gcc-9.2.0/libsanitizer/asan/asan_linux.cc , `PATH_MAX` was not declear, you need declear it.  
 I search it in libc, it is 1024.
+so what you need to do is find the file and add the decleatr  
+```c
+#ifndef PATH_MAX
+#define PATH_MAX
+#endif
+```
+I have add the declear in the script.  
+If you compile other version of gcc, you need to remove the ddeclear.
 
 ## option
 The default is not compile gdbserver.  
